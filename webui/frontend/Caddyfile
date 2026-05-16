@@ -1,0 +1,10 @@
+:80 {
+	root * /srv
+	encode gzip
+
+	@backend path /api/* /files/*
+	reverse_proxy @backend backend:8080
+
+	try_files {path} /index.html
+	file_server
+}
