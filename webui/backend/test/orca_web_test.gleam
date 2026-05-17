@@ -51,10 +51,8 @@ pub fn build_args_without_overrides_test() {
     )
   slicer.build_args(req, "/tmp/orca/job1/out", "")
   |> should.equal([
-    "--load-settings", "/p/m.json;/p/proc.json",
-    "--load-filaments", "/p/fil.json",
-    "--slice", "0",
-    "--outputdir", "/tmp/orca/job1/out",
+    "--load-settings", "/p/m.json;/p/proc.json", "--load-filaments",
+    "/p/fil.json", "--slice", "0", "--outputdir", "/tmp/orca/job1/out",
     "/tmp/orca/job1/model.stl",
   ])
 }
@@ -69,7 +67,8 @@ pub fn build_args_with_override_appends_file_test() {
       filament_path: "/p/fil.json",
       overrides: [#("layer_height", "0.16")],
     )
-  let args = slicer.build_args(req, "/tmp/orca/job1/out", "/tmp/orca/job1/override.json")
+  let args =
+    slicer.build_args(req, "/tmp/orca/job1/out", "/tmp/orca/job1/override.json")
   // The override profile must come *after* the base process so it wins.
   case args {
     ["--load-settings", settings, ..] ->
@@ -80,7 +79,8 @@ pub fn build_args_with_override_appends_file_test() {
 }
 
 pub fn multipart_body_has_file_and_root_test() {
-  let body = moonraker.multipart_body("part.gcode", bit_array.from_string("G28\n"))
+  let body =
+    moonraker.multipart_body("part.gcode", bit_array.from_string("G28\n"))
   let text = bit_array.to_string(body)
 
   case text {

@@ -124,10 +124,7 @@ fn update(m: Model, msg: Msg) -> #(Model, Effect(Msg)) {
         Some(job) ->
           case m.sel_machine, m.sel_process, m.sel_filament {
             "", _, _ | _, "", _ | _, _, "" -> #(
-              model.Model(
-                ..m,
-                status: "Select a printer, process and filament",
-              ),
+              model.Model(..m, status: "Select a printer, process and filament"),
               effect.none(),
             )
             machine, process, filament -> #(
@@ -138,13 +135,7 @@ fn update(m: Model, msg: Msg) -> #(Model, Effect(Msg)) {
                 gcode_url: None,
                 status: "Slicing…",
               ),
-              api.slice(
-                job,
-                machine,
-                process,
-                filament,
-                collect_overrides(m),
-              ),
+              api.slice(job, machine, process, filament, collect_overrides(m)),
             )
           }
       }
@@ -180,10 +171,7 @@ fn update(m: Model, msg: Msg) -> #(Model, Effect(Msg)) {
 
     PrinterUrlChanged(v) -> #(model.Model(..m, printer_url: v), effect.none())
     PrinterKeyChanged(v) -> #(model.Model(..m, printer_key: v), effect.none())
-    ToggledStartPrint(v) -> #(
-      model.Model(..m, start_print: v),
-      effect.none(),
-    )
+    ToggledStartPrint(v) -> #(model.Model(..m, start_print: v), effect.none())
 
     ClickedSend ->
       case m.job_id, m.gcode_file {
@@ -195,13 +183,7 @@ fn update(m: Model, msg: Msg) -> #(Model, Effect(Msg)) {
             )
             url -> #(
               model.Model(..m, sending: True, send_status: "Sending…"),
-              api.send_to_printer(
-                job,
-                file,
-                url,
-                m.printer_key,
-                m.start_print,
-              ),
+              api.send_to_printer(job, file, url, m.printer_key, m.start_print),
             )
           }
         _, _ -> #(
@@ -238,21 +220,15 @@ fn picker(
 ) -> Element(Msg) {
   html.label([attr.class("field")], [
     html.span([], [text(label)]),
-    html.select(
-      [event.on_input(on_sel)],
-      [
-        html.option([attr.value("")], "— choose —"),
-        ..list.map(refs, option_for(selected, _))
-      ],
-    ),
+    html.select([event.on_input(on_sel)], [
+      html.option([attr.value("")], "— choose —"),
+      ..list.map(refs, option_for(selected, _))
+    ]),
   ])
 }
 
 fn section(title: String, body: List(Element(Msg))) -> Element(Msg) {
-  html.section([attr.class("card")], [
-    html.h2([], [text(title)]),
-    ..body
-  ])
+  html.section([attr.class("card")], [html.h2([], [text(title)]), ..body])
 }
 
 fn settings_form(settings: List(Setting)) -> Element(Msg) {
@@ -298,16 +274,14 @@ fn slice_section(m: Model) -> Element(Msg) {
     False -> "Slice"
   }
   html.div([], [
-    html.button(
-      [event.on_click(ClickedSlice), attr.disabled(m.slicing)],
-      [text(btn_label)],
-    ),
+    html.button([event.on_click(ClickedSlice), attr.disabled(m.slicing)], [
+      text(btn_label),
+    ]),
     case m.gcode_url {
       Some(url) ->
-        html.a(
-          [attr.href(url), attribute("download", ""), attr.class("dl")],
-          [text("Download G-code")],
-        )
+        html.a([attr.href(url), attribute("download", ""), attr.class("dl")], [
+          text("Download G-code"),
+        ])
       None -> none()
     },
     case m.slice_log {
@@ -321,17 +295,11 @@ fn printer_section(m: Model) -> Element(Msg) {
   html.div([attr.class("grid")], [
     html.label([attr.class("field")], [
       html.span([], [text("Moonraker URL (e.g. http://printer.local)")]),
-      html.input([
-        attr.value(m.printer_url),
-        event.on_input(PrinterUrlChanged),
-      ]),
+      html.input([attr.value(m.printer_url), event.on_input(PrinterUrlChanged)]),
     ]),
     html.label([attr.class("field")], [
       html.span([], [text("API key (optional)")]),
-      html.input([
-        attr.value(m.printer_key),
-        event.on_input(PrinterKeyChanged),
-      ]),
+      html.input([attr.value(m.printer_key), event.on_input(PrinterKeyChanged)]),
     ]),
     html.label([attr.class("check")], [
       html.input([
@@ -341,10 +309,9 @@ fn printer_section(m: Model) -> Element(Msg) {
       ]),
       html.span([], [text("Start print after upload")]),
     ]),
-    html.button(
-      [event.on_click(ClickedSend), attr.disabled(m.sending)],
-      [text("Send to printer")],
-    ),
+    html.button([event.on_click(ClickedSend), attr.disabled(m.sending)], [
+      text("Send to printer"),
+    ]),
     case m.send_status {
       "" -> none()
       s -> html.p([attr.class("muted")], [text(s)])
@@ -388,13 +355,8 @@ fn view(m: Model) -> Element(Msg) {
     section("3 · Settings", [
       settings_form(m.settings),
       html.label([attr.class("field")], [
-        html.span([], [
-          text("Advanced overrides (one key=value per line)"),
-        ]),
-        html.textarea(
-          [event.on_input(RawOverridesChanged)],
-          m.raw_overrides,
-        ),
+        html.span([], [text("Advanced overrides (one key=value per line)")]),
+        html.textarea([event.on_input(RawOverridesChanged)], m.raw_overrides),
       ]),
     ]),
     section("4 · Slice", [slice_section(m)]),

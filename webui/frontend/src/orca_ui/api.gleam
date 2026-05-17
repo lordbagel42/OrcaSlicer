@@ -6,9 +6,9 @@ import gleam/result
 import lustre/effect.{type Effect}
 import lustre_http
 import orca_ui/model.{
-  type Msg, type Profiles, type SliceResp, type UploadResp, ProfileRef,
-  Profiles, ProfilesLoaded, SendCompleted, SliceCompleted, SliceResp,
-  UploadCompleted, UploadResp,
+  type Msg, type Profiles, type SliceResp, type UploadResp, ProfileRef, Profiles,
+  ProfilesLoaded, SendCompleted, SliceCompleted, SliceResp, UploadCompleted,
+  UploadResp,
 }
 
 fn http_err(e: lustre_http.HttpError) -> String {

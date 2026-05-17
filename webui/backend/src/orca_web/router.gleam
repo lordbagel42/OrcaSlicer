@@ -151,7 +151,8 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
 
 fn route(req: Request, ctx: Context) -> Response {
   case wisp.path_segments(req) {
-    ["api", "health"] -> json_resp(200, json.object([#("status", json.string("ok"))]))
+    ["api", "health"] ->
+      json_resp(200, json.object([#("status", json.string("ok"))]))
 
     ["api", "profiles"] -> handle_profiles(ctx)
 
@@ -235,20 +236,17 @@ fn handle_slice(req: Request, ctx: Context) -> Response {
         && profiles.is_within_root(ctx.profiles_dir, b.process_path)
         && profiles.is_within_root(ctx.profiles_dir, b.filament_path)
       case paths_ok, model_in(dir) {
-        False, _ -> error_json(400, "profile paths must be inside the profile root")
-        True, Error(_) -> error_json(404, "model not found for job — upload first")
+        False, _ ->
+          error_json(400, "profile paths must be inside the profile root")
+        True, Error(_) ->
+          error_json(404, "model not found for job — upload first")
         True, Ok(model) -> run_slice(ctx, b, dir, model)
       }
     }
   }
 }
 
-fn run_slice(
-  ctx: Context,
-  b: SliceBody,
-  dir: String,
-  model: String,
-) -> Response {
+fn run_slice(ctx: Context, b: SliceBody, dir: String, model: String) -> Response {
   let sr =
     slicer.SliceRequest(
       job_dir: dir,
@@ -281,7 +279,10 @@ fn run_slice(
         422,
         json.object([
           #("ok", json.bool(False)),
-          #("error", json.string("slicer exited with code " <> string.inspect(code))),
+          #(
+            "error",
+            json.string("slicer exited with code " <> string.inspect(code)),
+          ),
           #("log", json.string(log)),
         ]),
       )

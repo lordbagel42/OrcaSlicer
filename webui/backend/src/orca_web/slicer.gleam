@@ -105,7 +105,10 @@ pub fn build_args(
   ]
 }
 
-pub fn run(orca_bin: String, req: SliceRequest) -> Result(SliceResult, SliceError) {
+pub fn run(
+  orca_bin: String,
+  req: SliceRequest,
+) -> Result(SliceResult, SliceError) {
   let out_dir = req.job_dir <> "/out"
   use _ <- result.try(
     simplifile.create_directory_all(out_dir)

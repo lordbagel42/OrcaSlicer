@@ -48,7 +48,10 @@ pub fn multipart_body(filename: String, file: BitArray) -> BitArray {
   ])
 }
 
-fn base_request(base_url: String, api_key: String) -> Result(Request(String), SendError) {
+fn base_request(
+  base_url: String,
+  api_key: String,
+) -> Result(Request(String), SendError) {
   request.to(base_url)
   |> result.map_error(fn(_) { RequestError("invalid base url: " <> base_url) })
   |> result.map(fn(req) {
@@ -115,9 +118,7 @@ pub fn send(req: SendRequest) -> Result(String, SendError) {
     False -> Ok("uploaded " <> req.filename)
     True ->
       start(req)
-      |> result.map(fn(_) {
-        "uploaded and started print: " <> req.filename
-      })
+      |> result.map(fn(_) { "uploaded and started print: " <> req.filename })
   }
 }
 
