@@ -25,9 +25,8 @@ else ()
     endif ()
 
     ExternalProject_Add(dep_MPFR
-        URL https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.bz2
-            https://www.mpfr.org/mpfr-4.2.2/mpfr-4.2.2.tar.bz2
-        URL_HASH SHA256=9ad62c7dc910303cd384ff8f1f4767a655124980bb6d8650fe62c815a231bb7b
+        URL https://deb.debian.org/debian/pool/main/m/mpfr4/mpfr4_4.2.2.orig.tar.xz
+        URL_HASH SHA256=b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01
         DOWNLOAD_DIR ${DEP_DOWNLOAD_DIR}/MPFR
         BUILD_IN_SOURCE ON
         CONFIGURE_COMMAND autoreconf -f -i && 
